@@ -3,7 +3,7 @@
 ## Install
 
 ```
-$ go get -u github.com/akm/designaspect
+$ go get -u github.com/akm/designaspect/...
 ```
 
 ## LICENSE
