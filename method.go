@@ -2,32 +2,51 @@ package designaspect
 
 import (
 	"goa.design/goa/v3/dsl"
-	"goa.design/goa/v3/expr"
 )
 
-type HttpMethod func(string) *expr.RouteExpr
+type MethodFunc func(*Method)
 
-type Method struct {
-	Name           string
-	Path           string
-	BuildPayload   func(*Method) interface{}
-	ResultType     *expr.ResultTypeExpr
-	HttpMethod     HttpMethod
-	HttpStatusCode int
-	Elements       Elements
+func methodWithService(s *Srvc, name string, f MethodFunc) {
+	m := newMethod(s)
+	dsl.Method(name, func() {
+		f(m)
+		m.Elements.InMethod()
+	})
 }
 
-func (x *Method) Define() {
-	dsl.Method(x.Name, func() {
-		x.Elements.InMethod()
-		dsl.Payload(x.BuildPayload(x))
-		if x.ResultType != nil {
-			dsl.Result(x.ResultType)
+type Method struct {
+	Srvc     *Srvc
+	Elements Elements
+}
+
+func newMethod(s *Srvc) *Method {
+	return &Method{Srvc: s, Elements: Elements{}}
+}
+
+func (m *Method) Use(elements ...Element) {
+	m.Elements = append(m.Elements, elements...)
+}
+
+func (m *Method) ElementsAll() Elements {
+	return append(m.Srvc.Elements, m.Elements...)
+}
+
+func (m *Method) Payload(funcs ...PayloadFunc) {
+	dsl.Payload(func() {
+		m.ElementsAll().InPayload()
+		p := NewPayload(m)
+		for _, f := range funcs {
+			f(p)
 		}
-		dsl.HTTP(func() {
-			x.HttpMethod(x.Path)
-			dsl.Response(x.HttpStatusCode)
-			x.Elements.InHTTP()
-		})
+		p.Done()
+	})
+}
+
+func (m *Method) HTTP(funcs ...func()) {
+	dsl.HTTP(func() {
+		m.Elements.InHTTP()
+		for _, f := range funcs {
+			f()
+		}
 	})
 }
