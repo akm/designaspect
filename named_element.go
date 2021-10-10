@@ -21,6 +21,10 @@ func (el *NamedElement) bind(src func(string)) func() {
 	}
 }
 
+func (el *NamedElement) GetName() string {
+	return el.Name
+}
+
 func (el *NamedElement) IsRequired() bool {
 	return el.required
 }

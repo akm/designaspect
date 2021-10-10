@@ -25,12 +25,12 @@ func (p *Payload) Required(names ...string) {
 
 func (p *Payload) Done() {
 	names := append([]string{}, p.RequiredNames...)
-	// TODO Elements の Tags から判断するように後で変更
-	// TODO Elements に Filter メソッドを追加
 	elementsAll := p.Method.ElementsAll()
 	for _, el := range elementsAll {
-		if x, ok := el.(*NamedElement); ok {
-			names = append(names, x.Name)
+		if x, ok := el.(AttributeElement); ok {
+			if x.IsRequired() {
+				names = append(names, x.GetName())
+			}
 		}
 	}
 	if len(names) > 0 {
