@@ -15,8 +15,9 @@ func NewPayload(method *Method) *Payload {
 	return &Payload{Method: method, RequiredNames: []string{}}
 }
 
-func (p *Payload) Attribute(name string, args ...interface{}) {
+func (p *Payload) Attribute(name string, args ...interface{}) string {
 	dsl.Attribute(name, args...)
+	return name
 }
 
 func (p *Payload) Required(names ...string) {
