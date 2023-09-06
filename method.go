@@ -37,7 +37,7 @@ func (m *Method) Payload(args ...interface{}) {
 		panic("PayloadFunc and other arguments are mixed")
 	}
 	if len(rest) > 0 {
-		dsl.Payload(args[0], args[1:]...)
+		dsl.Payload(rest[0], rest[1:]...)
 		return
 	}
 	dsl.Payload(func() {
