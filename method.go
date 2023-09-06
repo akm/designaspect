@@ -31,7 +31,15 @@ func (m *Method) ElementsAll() Elements {
 	return append(m.Srvc.Elements, m.Elements...)
 }
 
-func (m *Method) Payload(funcs ...PayloadFunc) {
+func (m *Method) Payload(args ...interface{}) {
+	funcs, rest := FilterPayloadFunc(args)
+	if len(funcs) > 0 && len(rest) > 0 {
+		panic("PayloadFunc and other arguments are mixed")
+	}
+	if len(rest) > 0 {
+		dsl.Payload(args[0], args[1:]...)
+		return
+	}
 	dsl.Payload(func() {
 		m.ElementsAll().InPayload()
 		p := NewPayload(m)

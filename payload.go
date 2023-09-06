@@ -6,6 +6,19 @@ import (
 
 type PayloadFunc func(*Payload)
 
+func FilterPayloadFunc(s []interface{}) ([]PayloadFunc, []interface{}) {
+	funcs := []PayloadFunc{}
+	rest := []interface{}{}
+	for _, i := range s {
+		if v, ok := i.(PayloadFunc); ok {
+			funcs = append(funcs, v)
+		} else {
+			rest = append(rest, i)
+		}
+	}
+	return funcs, rest
+}
+
 type Payload struct {
 	Method        *Method
 	RequiredNames []string
