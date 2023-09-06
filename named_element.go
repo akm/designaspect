@@ -6,6 +6,8 @@ type NamedElement struct {
 	*ElementBase
 }
 
+var _ (AttributeElement) = (*NamedElement)(nil)
+
 func NewNamedElement(name string, inMethod, inPayload, inHTTP func(string)) *NamedElement {
 	r := &NamedElement{Name: name}
 	r.ElementBase = NewElementBase(r.bind(inMethod), r.bind(inPayload), r.bind(inHTTP))

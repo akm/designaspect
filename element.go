@@ -13,6 +13,8 @@ type ElementBase struct {
 	inHTTP    func()
 }
 
+var _ (Element) = (*ElementBase)(nil)
+
 func NewElementBase(inMethod, inPayload, inHTTP func()) *ElementBase {
 	return &ElementBase{
 		inMethod:  inMethod,
