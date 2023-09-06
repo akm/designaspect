@@ -10,9 +10,12 @@ func FilterPayloadFunc(s []interface{}) ([]PayloadFunc, []interface{}) {
 	funcs := []PayloadFunc{}
 	rest := []interface{}{}
 	for _, i := range s {
-		if v, ok := i.(PayloadFunc); ok {
+		switch v := i.(type) {
+		case PayloadFunc:
 			funcs = append(funcs, v)
-		} else {
+		case func(*Payload):
+			funcs = append(funcs, v)
+		default:
 			rest = append(rest, i)
 		}
 	}
