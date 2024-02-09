@@ -36,6 +36,11 @@ func (p *Payload) Attribute(name string, args ...interface{}) string {
 	return name
 }
 
+func (p *Payload) Field(tag interface{}, name string, args ...interface{}) string {
+	dsl.Field(tag, name, args...)
+	return name
+}
+
 func (p *Payload) Required(names ...string) {
 	p.RequiredNames = append(p.RequiredNames, names...)
 }
